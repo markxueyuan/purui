@@ -68,4 +68,6 @@
                        output-file))]
     (select-55 sql func)))
 
-(news-to-csv "2014-6-1" "2014-6-30" "D:/data/keywords_brand.csv" "D:/data/news_data.csv")
+;(news-to-csv "2014-6-1" "2014-6-30" "D:/data/keywords_brand.csv" "D:/data/news_data.csv")
+
+(weibo-to-csv "2014-6-1" "2014-6-30" "D:/data/keywords_brand.csv" "D:/data/weibo_data.csv")

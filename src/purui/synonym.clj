@@ -1,6 +1,7 @@
 (ns purui.synonym
   (:require [purui.io :as io]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [clojure.java.io :as javaio]))
 
 (def speech-synonyms
   {"n" "名词"
@@ -117,7 +118,23 @@
     (map #(assoc % :brand (brand %)) coll)))
 
 
-
+(defn categorize
+  [coll category-file output-file]
+  (let [cat-map (io/csv-to-map category-file)
+        writer1 (javaio/writer output-file)
+        writer2 (javaio/writer output-file :append true)
+        col (map name (keys (first coll)))
+        func (fn
+               [entry]
+               (let [col (keys entry)
+                     value (vals entry)]
+                 (when-let [cat (get cat-map (:word entry))]
+                   (io/write-csv-quoted-by-row (conj value cat) writer2))))]
+    (println "Filter out data having categories...")
+    (io/write-csv-quoted-by-row (conj col "category") writer1)
+    (.close writer1)
+    (dorun (map func coll))
+    (.close writer2)))
 
 
 

@@ -64,8 +64,6 @@
     (.write (clj-csv/write-csv (vector (map str row)) :force-quote true))
     (.flush)))
 
-(write-csv-quoted-by-row ["a" "b" "c"] (io/writer "D:/data/testtest"))
-
 
 (defn lazy-read-mysql
   [& {:keys [host port db user password sql result-set-fn row-fn]

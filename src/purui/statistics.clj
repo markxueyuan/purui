@@ -1,9 +1,13 @@
 (ns purui.statistics
-  (:require [purui.pivot-table :as pt]
-            [purui.io :as io]
+  (:require [purui.io :as io]
             [clojure.java.io :as javaio]
             [clojure.string :as string]))
 
+(defn easy-frequency
+  [coll output-file]
+  (let [s (frequencies coll)
+        c (map #(assoc (first %) :count (second %)) s)]
+    (io/write-csv-quoted c output-file)))
 
 (defn word-frequency
   [coll mid-file output-file & cols]
@@ -16,7 +20,7 @@
     (println "First round accumulation begins, check file " mid-file)
 
     (let [coll (map #(select-keys % cols) coll)
-          pars (partition-all 20000 coll)
+          pars (partition-all 10000 coll)
           func (fn [p]
                  (let [s (frequencies p)]
                    (map #(assoc (first %) :count (second %)) s)))]
@@ -74,6 +78,20 @@
 
 
 
-;(word-frequency (c) "D:/data/mid-file.csv" "D:/data/news" :brand :publish_date :word :nature)
+
+;(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext2.csv") "D:/data/mid-file.csv" "D:/data/news" :brand :publish_date :word :nature)
 
 
+#_(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext2.csv") "D:/data/mid-file.csv" "D:/data/news"
+                :brand :host_name :source_name :word :nature)
+
+;(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext6.csv") "D:/data/mid-file.csv" "D:/data/weibo" :brand :publish_date :word :nature)
+
+;(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext6.csv") "D:/data/mid-file.csv" "D:/data/weibo" :brand :weibo_user_name :word :nature)
+
+;(categorize (io/lazy-read-csv-head-on "D:/data/segstext6.csv") "D:/data/category.csv" "D:/data/weibo_category")
+
+#_(word-frequency (io/lazy-read-csv-head-on "D:/data/weibo") "D:/data/mid-file.csv" "D:/data/weibo_category"
+                :brand :publish_date :word :category)
+
+;(easy-frequency (io/lazy-read-csv-head-on "D:/data/news_match.csv") "D:/data/news_regex.csv")

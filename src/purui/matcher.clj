@@ -12,7 +12,10 @@
                     matches (when regex
                               (cond (:text entry) (re-seq regex (:text entry))
                                     (:title entry) (re-seq regex (:title entry))))
-                    parts (-> (select-keys entry [:brand :source_name :host_name])
+                    cols (if (entry :weibo_user_name)
+                           [:brand :weibo_user_name]
+                           [:brand :source_name :host_name])
+                    parts (-> (select-keys entry cols)
                               (assoc :publish_date (str (:publish_date entry))))
                     results (map #(assoc parts :regex %) matches)]
                 results))]
@@ -21,7 +24,6 @@
             (io/write-csv-quoted output-file))))
 
 
-(reg-match (io/lazy-read-csv-head-on "D:/data/news_data.csv")
+(reg-match (io/lazy-read-csv-head-on "D:/data/weibo_data.csv")
            "D:/data/brand_regex.csv"
-           "D:/data/news_match")
-
+           "D:/data/weibo_match")

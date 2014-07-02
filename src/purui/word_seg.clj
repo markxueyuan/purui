@@ -88,7 +88,7 @@
   (let [news [:匹配关键词 :媒介名称 :日期 :来源]
         news2 [:keywords :host_name :publish_date :source_name]
         weibo [:匹配关键词 :日期 :性别 :省]
-        weibo2 [:keywords :publish_date :gender]
+        weibo2 [:keywords :publish_date :weibo_user_name :gender :location]
         default [:keywords :publish_date]
         head (set (keys (first coll)))
         cols (cond cols (conj cols :word-seg :brand)
@@ -168,7 +168,7 @@
                  :sql "select * from news"
                  :result-set-fn (fn [rs] (io/write-csv-quoted (binding [*fast* true] (utility rs :title)) "D:/data/testtime4.csv"))))
 
-(news-to-seg "2014-6-1" "2014-6-30" "D:/data/keywords_brand.csv" "D:/data/segstext2.csv")
+;(news-to-seg "2014-6-1" "2014-6-30" "D:/data/keywords_brand.csv" "D:/data/segstext2.csv")
 
 
 ;(weibo-to-seg "2014-6-1" "2014-6-30" "D:/data/keywords_brand.csv" "D:/data/segstext6.csv")
