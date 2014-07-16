@@ -142,7 +142,7 @@
 
 
 
-
+;(categorize (io/lazy-read-csv-head-on "D:/data/news_segs.csv") "D:/data/category.csv" "D:/data/news_category")
 
 
 

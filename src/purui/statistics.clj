@@ -82,7 +82,7 @@
 ;(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext2.csv") "D:/data/mid-file.csv" "D:/data/news" :brand :publish_date :word :nature)
 
 
-#_(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext2.csv") "D:/data/mid-file.csv" "D:/data/news"
+#_(word-frequency (io/lazy-read-csv-head-on "D:/data/news_segs.csv") "D:/data/hehe/mid-file.csv" "D:/data/hehe/news"
                 :brand :host_name :source_name :word :nature)
 
 ;(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext6.csv") "D:/data/mid-file.csv" "D:/data/weibo" :brand :publish_date :word :nature)
