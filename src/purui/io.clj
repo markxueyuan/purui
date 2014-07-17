@@ -3,7 +3,8 @@
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]
             [clojure-csv.core :as clj-csv]
-            [clojure.java.jdbc :as j]))
+            [clojure.java.jdbc :as j]
+            [clojure.string :as string]))
 
 (defn lazy-read-excel-head-on
   [file]
@@ -47,10 +48,10 @@
 
 
 (defn write-csv-quoted
-  [coll file & {:keys [append]}]
+  [coll file & {:keys [append encoding]}]
   (let [keys-vec (keys (first coll))
         vals-vecs (map (apply juxt keys-vec) coll)]
-    (with-open [out (io/writer file :append append)]
+    (with-open [out (io/writer file :append append :encoding encoding)]
       (binding [*out* out]
         (when-not append
           (print (clj-csv/write-csv (vector (map name keys-vec)) :force-quote true)))
@@ -63,6 +64,25 @@
   (doto writer
     (.write (clj-csv/write-csv (vector (map str row)) :force-quote true))
     (.flush)))
+
+(defn clean-line-break
+  [string]
+  (->> (string/split string #"[\r\n]")
+       (string/join "   ")))
+
+
+(defn write-csv-quoted-split-brand
+  [row the-atom the-name & {:keys [encoding]}]
+  (let [brand (:brand row)
+        col (map name (keys row))
+        value (map clean-line-break (vals row))
+        writer (io/writer (str the-name "_" brand ".csv") :append true :encoding encoding)]
+    (if-not (get @the-atom brand)
+      (do
+        (swap! the-atom assoc brand writer)
+        (write-csv-quoted-by-row col writer)
+        (write-csv-quoted-by-row value writer))
+      (write-csv-quoted-by-row value (get @the-atom brand)))))
 
 
 (defn lazy-read-mysql
@@ -88,5 +108,9 @@
                                   :fetch-size fetch-size)
         _ (.setFetchSize stmt Integer/MIN_VALUE)]
     (if row-fn
-      (j/query cnxn [stmt] :row-fn row-fn :as-arrays? true)
+      (j/query cnxn [stmt] :row-fn row-fn)
       (j/query cnxn [stmt] :result-set-fn result-set-fn))))
+
+;(write-csv-quoted [{:a 2 :b "太差劲了你！"}] "D:/data/test_encoding2.csv" :encoding "GBK")
+
+;(lazy-read-mysql :row-fn println :sql "select * from test limit 50")

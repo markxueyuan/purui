@@ -41,35 +41,24 @@
     (println "Results are to be distributed to every brand")
 
     (let [coll (io/lazy-read-csv-head-on mid-file2)
-          brands (do
-                   (println "In gathering brands......")
-                   (distinct (map :brand (io/lazy-read-csv-head-on mid-file2))))
-          pairs (reduce #(assoc %1 %2 (javaio/writer (str mid-file2 "_" %2) :append true)) {} brands)
-          a (atom #{})]
-      (println "The brands are " brands)
+          a (atom {})]
       (println "Data are distributing to each brand...")
-      (doseq [q coll]
-        (let [brand (:brand q)
-              col (keys q)
-              value (vals q)]
-          (if-not (get @a brand)
-            (do (swap! a conj brand)
-              (io/write-csv-quoted-by-row (map name col) (get pairs brand))
-              (io/write-csv-quoted-by-row value (get pairs brand)))
-            (io/write-csv-quoted-by-row value (get pairs brand)))))
-      (doseq [w (vals pairs)]
+      (doseq [row coll]
+        (io/write-csv-quoted-split-brand row a mid-file2))
+      (doseq [w (vals @a)]
         (.close w))
       ;(javaio/delete-file mid-file2)
 
       (println "Last step. Output statistics for each brand")
 
-      (doseq [f @a]
-        (let [file (str mid-file2 "_" f)
+      (doseq [f (keys @a)]
+        (let [file (str mid-file2 "_" f ".csv")
               output-file (str output-file "_" f ".csv")
               coll (io/lazy-read-csv-head-on file)
               pivots (keys (dissoc (first (io/lazy-read-csv-head-on file)) :count))]
           (-> (func coll pivots)
-              (io/write-csv-quoted output-file))
+              (#(sort (fn [x1 x2] (> (:count x1) (:count x2))) %))
+              (io/write-csv-quoted output-file :encoding "GBK"))
           ;(javaio/delete-file file)
           )))
 
@@ -82,8 +71,8 @@
 ;(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext2.csv") "D:/data/mid-file.csv" "D:/data/news" :brand :publish_date :word :nature)
 
 
-#_(word-frequency (io/lazy-read-csv-head-on "D:/data/news_segs.csv") "D:/data/hehe/mid-file.csv" "D:/data/hehe/news"
-                :brand :host_name :source_name :word :nature)
+#_(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext2.csv") "D:/data/hehe/mid-file.csv" "D:/data/hehe/news"
+                :brand :word :nature)
 
 ;(word-frequency (io/lazy-read-csv-head-on "D:/data/segstext6.csv") "D:/data/mid-file.csv" "D:/data/weibo" :brand :publish_date :word :nature)
 

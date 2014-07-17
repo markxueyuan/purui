@@ -24,6 +24,6 @@
             (io/write-csv-quoted output-file))))
 
 
-(reg-match (io/lazy-read-csv-head-on "D:/data/weibo_data.csv")
+#_(reg-match (io/lazy-read-csv-head-on "D:/data/weibo_data.csv")
            "D:/data/brand_regex.csv"
            "D:/data/weibo_match")
