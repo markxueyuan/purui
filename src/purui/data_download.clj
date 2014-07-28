@@ -104,6 +104,6 @@
 
 ;(weibo-to-csv "2014-6-1" "2014-6-30" "D:/data/keywords_brand.csv" "D:/data/weibo_data.csv")
 
-;(just-to-csv "news_data" "D:/data/news_data_haha" :split true)
+;(just-to-csv "news_0725" "D:/data/purui0725/news_data" :split true)
 
-;(just-to-csv "news_data" "D:/data/news_data_haha2")
+;(just-to-csv "news_0735" "D:/data/news_data_haha2")

@@ -137,7 +137,11 @@
     (.close writer2)))
 
 
-
+(defn category-to-csv
+  [input-file category-file output-file]
+  (categorize (io/lazy-read-csv-head-on input-file)
+             category-file
+             output-file))
 
 
 

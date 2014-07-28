@@ -75,7 +75,7 @@
     (map func word-seg)))
 
 
-(defn utility
+(defn utility2
   [coll seg-col cols]
   (let [news [:匹配关键词 :媒介名称 :日期 :来源]
         news2 [:keywords :host_name :publish_date :source_name]
@@ -97,13 +97,13 @@
          (filter #(> (count (:word %)) 1))
          (map #(syn/han :nature %)))))
 
-(utility (io/lazy-read-csv-head-on "D:/data/news_data_haha") :text nil)
+;(utility2 (io/lazy-read-csv-head-on "D:/data/news_data_haha") :text nil)
 
 
 (defn to-seg
   [input-file output-file seg-col & cols]
   (-> (io/lazy-read-csv-head-on input-file)
-      (utility seg-col cols)
+      (utility2 seg-col cols)
       (io/write-csv-quoted output-file)))
 
 ;(to-seg "D:/data/news_data_haha" "D:/data/segstext2.csv" :text)

@@ -27,3 +27,9 @@
 #_(reg-match (io/lazy-read-csv-head-on "D:/data/weibo_data.csv")
            "D:/data/brand_regex.csv"
            "D:/data/weibo_match")
+
+(defn reg-match-to-csv
+  [input-file regex-file output-file]
+  (reg-match (io/lazy-read-csv-head-on input-file)
+             regex-file
+             output-file))

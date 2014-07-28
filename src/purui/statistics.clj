@@ -4,13 +4,14 @@
             [clojure.string :as string]))
 
 (defn easy-frequency
-  [coll output-file]
-  (let [s (frequencies coll)
+  [coll output-file cols]
+  (let [coll (map #(select-keys % cols) coll)
+        s (frequencies coll)
         c (map #(assoc (first %) :count (second %)) s)]
     (io/write-csv-quoted c output-file)))
 
 (defn word-frequency
-  [coll mid-file output-file & cols]
+  [coll mid-file output-file cols]
   (let [mid-file2 (str mid-file 2)
         func (fn [p pivots]
                (let [s (group-by #(select-keys % pivots) p)]
@@ -64,7 +65,18 @@
 
     (println "All jobs are done!")))
 
+(defn word-frequency-to-csv
+  [input-file mid-file output-file & cols]
+  (word-frequency (io/lazy-read-csv-head-on input-file)
+                  mid-file
+                  output-file
+                  cols))
 
+(defn easy-frequency-to-csv
+  [input-file output-file & cols]
+  (easy-frequency (io/lazy-read-csv-head-on input-file)
+                  output-file
+                  cols))
 
 
 
